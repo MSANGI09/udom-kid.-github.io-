@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Msangi Jr Data Analysis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background:#A7EEE8 ;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 2%;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+
+        /* Image animation */
+        .animate-img {
+            width: 150px;
+            height: 150px;
+            margin: 20px auto;
+            animation: bounce 2s infinite;
+            border-radius: 50%;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px 0;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* Data Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        #chartContainer {
+            margin: 50px 0;
+            height: 400px;
+            display: none;
+        }
+
+        #result {
+            font-size: 18px;
+            color: #333;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Title and Animated Image -->
+    <h1>Msangi Jr Data Analysis</h1>
+    <img src="lo.png" alt="Msangi Jr Image" class="animate-img"><br>
+    
+    <!-- Input Section -->
+    <label for="dataInput">Enter Data (comma-separated values):</label>
+    <textarea id="dataInput" rows="5" style="width:100%;"></textarea>
+
+    <button class="btn" id="analyzeBtn">Analyze Data</button>
+
+    <!-- Result Section -->
+    <div id="result" class="hidden"></div>
+
+    <!-- Table Section -->
+    <h2>Data Table</h2>
+    <table id="dataTable" class="hidden">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Value</th>
+                <th>Squared</th>
+                <th>Cube</th>
+            </tr>
+        </thead>
+        <tbody id="dataBody">
+            <!-- Data will be inserted here -->
+        </tbody>
+    </table>
+
+    <!-- Chart Section -->
+    <h2>Chart</h2>
+    <div id="chartContainer">
+        <canvas id="myChart"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Handle data analysis and rendering
+    document.getElementById('analyzeBtn').addEventListener('click', function() {
+        const dataInput = document.getElementById('dataInput').value;
+        const data = dataInput.split(',').map(Number).filter(n => !isNaN(n));
+
+        if (data.length === 0) {
+            alert('Please enter valid data!');
+            return;
+        }
+
+        // Show results
+        document.getElementById('result').textContent = 'Data Analysis Complete!';
+        document.getElementById('result').classList.remove('hidden');
+
+        // Populate table
+        const tableBody = document.getElementById('dataBody');
+        tableBody.innerHTML = '';  // Clear previous table content
+        data.forEach((value, index) => {
+            const row = `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${value}</td>
+                    <td>${value ** 2}</td>
+                    <td>${value ** 3}</td>
+                </tr>
+            `;
+            tableBody.insertAdjacentHTML('beforeend', row);
+        });
+
+        document.getElementById('dataTable').classList.remove('hidden');
+
+        // Render Chart
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: data.map((_, i) => `Data ${i + 1}`),
+                datasets: [{
+                    label: 'Value',
+                    data: data,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        document.getElementById('chartContainer').style.display = 'block';
+    });
+</script>
+
+</body>
+</html>
